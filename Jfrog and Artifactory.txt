@@ -1,0 +1,25 @@
+1. to share library components and third party components of same versions
+becomes messy
+2. problem occurs when everyone use their own version of artifacts
+
+
+
+Artifactory : is the efficient way of storing your artifacts and 
+retrieving it.
+Artifact : distinct collection of information into a set is called as
+an artifact.
+
+problem with source control management :
+Source control management stores your source code  ex java classfile.
+versioned by content.
+
+
+In source control management base file is stored and the changes to
+this file are stored as deltas on the top of the base file.
+
+while in binary files each time the change is made a new file is 
+stored.
+
+jfrog : stores artifactorirs or binaries ex blob, versioned by name
+
+jfrog artifactory : comes with mission control

@@ -1,0 +1,67 @@
+1.) Software testings aim is to provide code is of high quality with no bugs and logical 
+logical errors.
+
+
+testing type :
+2.)manual testing : all the test cases are written by the tester and tested.
+3.)automatic testing : write scripts and runs standardized applications.
+
+
+testing methods :
+4.static method : before executing the source code it is done that is without 
+executing it does so by analysing the code against pre set of coding rules(sonarqube).
+5.dynamic method : It happens during the exection of the code and identifies 
+the vulnerabilities because it also looks at the codes integration with 
+other databases,servers and services it happens in testing environment.
+
+testing approaches :
+6. black box:tester doesnt know the internal structure of what the application
+ is testing.
+7. white box:tester  know the internal structure of what the application
+ is testing
+8. gray box:both above
+
+
+testing levels :
+unit testing : each test cases is tested separately
+integration testing : whole functionality is tested together
+system testing : whole system is tested as together
+acceptance testing: requirements of the clients are met
+
+
+SONAR QUBE
+its a static analysis code tool which is used to :
+1. find errors earlier in the development
+2.detects the complex code and suggests the simpler code
+3.finds security error ex : if some variables like password are given in 
+txt format
+4. it supports more than 20 programming languages and checks best coding practice
+is used
+5.can create project specific rules
+
+
+technical debt : for a problem there will be a easy solution and a complex solution.
+and if you choose a complex solution then there is a possibility of additional rework
+at later time which costs much more because the whole project has to be understood 
+again and redesigned, and in case of the complex solution this technical debt will
+be less and sonarqube will also calculate this technical debt. 
+
+
+what is sonar qube : sonarqube is static testing analysis tool software it is used for
+1. potential bugs
+2. Code defects to design inefficiences
+3. code duplicates(reduces memory).
+4. Excess complexity.
+
+
+plugins : sonar qube plugin
+
+manage jenkins -> configure system -> sonar qube name and ip->sonar qube server 
+sonar qube account number and password
+
+global tool configuration-> sonarqube scanner ->path of scanner
+
+
+freestyle project : -> git add details such as url and credentials->b
+
+
