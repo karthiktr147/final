@@ -1,0 +1,208 @@
+52.252.102.93
+DevOpsVm3_001
+DevOpsVm3
+
+52.177.179.150
+DevOpsVm4
+DevOpsVm4_001
+
+104.43.202.62
+DevOpsVm2
+DevOpsVm2_001
+
+
+23.100.121.181
+DevOpsVm5
+DevOpsVm5_001
+
+
+23.100.127.170
+DevOpsVm6
+DevOpsVm6_001
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+pipeline{
+    agent any
+    stages{
+        stage('Source'){
+           steps{
+               git 'https://github.com/karthiktr147/WarDeployment.git'}
+        }
+        stage('Clean package'){
+            tools{
+                maven 'Maven'
+            }
+           steps{
+               sh 'mvn clean package'
+           }
+        }
+    stage('deploy'){
+            steps{
+                sh 'cp  /var/lib/jenkins/workspace/pipeline/target/*.war   /opt/tomcat/webapps/'
+            }
+        }
+        stage('DELETE ALL JOBS BUILD HISTORY'){
+            steps{
+                script{
+                    def buildLogCount=1
+            Jenkins.instance.getAllItems(Job.class).each { jobitem ->
+           def jobName = jobitem.name
+           def jobInfo = Jenkins.instance.getItem(jobName)
+           
+         
+          if(jobInfo.getLastBuild()){
+           
+                def lastBuildNum=jobInfo.getLastBuild().getNumber()
+       
+              if(lastBuildNum>=buildLogCount){
+                 def deletedBuildNum=lastBuildNum - buildLogCount
+                    def deletedNumRange = Fingerprint.RangeSet.fromString("0-${deletedBuildNum}",false);
+               
+                    def buildCount=jobInfo.getBuilds(deletedNumRange).size()
+               
+                    if(buildCount==0){
+                        println "No build logs found in  ${jobName} and build history count is : ${buildCount}"
+                    }
+                    else{
+               
+                        jobInfo.getBuilds(deletedNumRange).each { item ->
+                             item.delete()
+                        }
+                    }
+                }
+                else{
+                  println "No build logs to delete in ${jobName}"
+                }
+            }
+          else{
+           
+            println "No build logs found in ${jobName}"
+            }
+   
+    }
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+# Every One minute
+# */1 * * * *
+#weekly -- build every week at midnight on Sunday morning
+ 0 0 * * 0  
+
+pipeline {
+	agent any
+	stages {
+		stage('Deleting the build history by groovy script') {
+			steps {
+				script {
+					def buildLogCount=-5
+					Jenkins.instance.getAllItems(Job.class).each {  jobitem ->
+						def jobName = jobitem.name
+						def jobInfo = Jenkins.instance.getItem(jobName)
+
+						if(jobInfo.getLastBuild()) {
+							def lastBuildNum=jobInfo.getLastBuild().getNumber()
+							if(lastBuildNum>=buildLogCount) {
+								def deletedBuildNum=lastBuildNum - buildLogCount
+								def deletedNumRange = Fingerprint.RangeSet.fromString("0-${deletedBuildNum}",false);
+								def buildCount=jobInfo.getBuilds(deletedNumRange).size()
+								if(buildCount==0) {
+									println "No build logs found in  ${jobName} and build history count is : ${buildCount}"
+								}
+								else {
+									jobInfo.getBuilds(deletedNumRange).each {  item ->
+										item.delete()
+									}
+								}
+							}
+							else{
+								println "No build logs to delete in ${jobName}"
+							}
+						}
+						else{
+
+							println "No build logs found in ${jobName}"
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+pipeline{
+    agent any
+    stages{
+        stage('Git'){
+           steps{
+               git 'https://github.com/karthiktr147/WarDeployment.git'}
+        }
+        stage('war package'){
+            tools{
+                maven 'Maven'
+            }
+           steps{
+               sh 'mvn clean package'
+           }
+        }
+	stage('server'){
+            steps{
+                sh 'cp /var/lib/jenkins/workspace/pipeline/target/*.war  DevOpsVm5@http://23.100.121.181:8081:/opt/tomcat/webapps/'
+            }
+        }
+    }
+   
+    post {
+    always {
+        echo 'build status mail from jenkins'
+       mail to: 'karthiktr147@gmail.com',
+          subject: "Result: ${currentBuild.fullDisplayName}",
+          body: "${env.BUILD_URL} has result ${currentBuild.result}"
+    }
+     
+  }
+}
